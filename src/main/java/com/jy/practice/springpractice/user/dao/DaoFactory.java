@@ -32,8 +32,4 @@ public class DaoFactory {
 
         return dataSource;
     }
-
-    public static void main(String[] args) {
-        System.out.println("하");
-    }
 }

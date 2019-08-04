@@ -2,60 +2,74 @@ package com.jy.practice.springpractice.user.test;
 
 import com.jy.practice.springpractice.user.dao.UserDao;
 import com.jy.practice.springpractice.user.domain.User;
+import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.sql.SQLException;
 
+import static org.junit.Assert.assertThat;
+
 public class UserDaoTest {
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    private UserDao dao;
+
+    @Before
+    public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("/applicationContext.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        User user = new User();
-        user.setId("whiteship");
-        user.setName("백기선");
-        user.setPassword("married");
-
-
-        dao.add(user);
-
-        System.out.println(user.getId() + " 등록 성공");
-
-        User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
-
-        if (!user.getName().equals(user2.getName())) {
-            System.out.println("테스트 실패 (name)");
-        }
-        else if (!user.getPassword().equals(user2.getPassword())) {
-            System.out.println("테스트 실패 (password)");
-        }
-        else {
-            System.out.println("조회 테스트 성공");
-        }
+        dao = context.getBean("userDao", UserDao.class);
     }
 
     @Test
-    public void addAndGet() throws ClassNotFoundException, SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("/applicationContext.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
+    public void addAndGet() throws SQLException {
 
-        User user = new User();
-        user.setId("whiteship");
-        user.setName("백기선");
-        user.setPassword("married");
+        User user1 = new User("gyumee", "박성철", "springno1");
+        User user2 = new User("leegw700", "이길원", "springno2");
 
-        dao.add(user);
+        dao.deleteAll();
+        assertThat(dao.getCount(), CoreMatchers.is(0));
 
-        User user2 = dao.get(user.getId());
+        dao.add(user1);
+        dao.add(user2);
+        assertThat(dao.getCount(), CoreMatchers.is(2));
 
-        assertThat(user2.getName(), is(user.getName()));
-        assertThat(user2.getPassword(), is(user.getPassword()));
+        User userget1 = dao.get(user1.getId());
+        assertThat(userget1.getName(), CoreMatchers.is(user1.getName()));
+        assertThat(userget1.getPassword(), CoreMatchers.is(user1.getPassword()));
+
+        User userget2 = dao.get(user2.getId());
+        assertThat(userget2.getName(), CoreMatchers.is(user2.getName()));
+        assertThat(userget2.getPassword(), CoreMatchers.is(user2.getPassword()));
+    }
+
+    @Test
+    public void count() throws SQLException {
+        User user1 = new User("gyumee", "박성철", "springno1");
+        User user2 = new User("leegw700", "이길원", "springno2");
+        User user3 = new User("bumjin", "박범진", "springno3");
+
+        dao.deleteAll();
+        assertThat(dao.getCount(), CoreMatchers.is(0));
+
+        dao.add(user1);
+        assertThat(dao.getCount(), CoreMatchers.is(1));
+
+        dao.add(user2);
+        assertThat(dao.getCount(), CoreMatchers.is(2));
+
+        dao.add(user3);
+        assertThat(dao.getCount(), CoreMatchers.is(3));
+
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getUserFailure() throws SQLException {
+        dao.deleteAll();
+        assertThat(dao.getCount(), CoreMatchers.is(0));
+
+        dao.get("unknown_id");
     }
 }

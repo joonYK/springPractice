@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class) //Junit 확장 기능. 해당 클래스를 지정해주면 테스트에 사용할 컨텍스트를 만들고 관리
-@ContextConfiguration(locations = "/test-applicationContext.xml") //컨텍스트 설정파일 지정
+@ContextConfiguration(locations = "/applicationContext.xml") //컨텍스트 설정파일 지정
 public class UserDaoTest {
 
     @Autowired

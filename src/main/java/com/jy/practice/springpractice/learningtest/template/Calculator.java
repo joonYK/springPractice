@@ -6,49 +6,43 @@ import java.io.IOException;
 
 public class Calculator {
     public Integer calcSum(String filepath) throws IOException {
-        BufferedReaderCallback sumCallback = new BufferedReaderCallback() {
+        LineCallback sumCallback = new LineCallback() {
             @Override
-            public Integer doSomethingWithReader(BufferedReader br) throws IOException {
-                br = new BufferedReader(new FileReader(filepath));
-                Integer sum = 0;
-                String line = null;
-                while((line = br.readLine()) !=  null) {
-                    sum += Integer.parseInt(line);
-                }
-
-                return sum;
+            public Integer doSomethingWithLine(String line, Integer value) throws IOException {
+                value += Integer.parseInt(line);
+                return value;
             }
         };
 
-        return fileReadTmeplate(filepath, sumCallback);
+        return lineReadTmeplate(filepath, sumCallback, 0);
 
     }
 
     public Integer calcMultiply(String filepath) throws IOException {
-        BufferedReaderCallback multiplyCallback = new BufferedReaderCallback() {
+        LineCallback multiplyCallback = new LineCallback() {
             @Override
-            public Integer doSomethingWithReader(BufferedReader br) throws IOException {
-                br = new BufferedReader(new FileReader(filepath));
-                Integer multiply = 1;
-                String line = null;
-                while((line = br.readLine()) !=  null) {
-                    multiply *= Integer.parseInt(line);
-                }
-
-                return multiply;
+            public Integer doSomethingWithLine(String line, Integer value) throws IOException {
+                value *= Integer.parseInt(line);
+                return value;
             }
         };
 
-        return fileReadTmeplate(filepath, multiplyCallback);
+        return lineReadTmeplate(filepath, multiplyCallback, 1);
 
     }
 
-    public Integer fileReadTmeplate(String filepath, BufferedReaderCallback callback) throws IOException {
+    public Integer lineReadTmeplate(String filepath, LineCallback callback, Integer initVal) throws IOException {
         BufferedReader br = null;
 
         try {
             br = new BufferedReader(new FileReader(filepath));
-            return callback.doSomethingWithReader(br);
+            Integer res = initVal;
+            String line = null;
+            while((line = br.readLine()) != null) {
+                res = callback.doSomethingWithLine(line, res);
+            }
+
+            return res;
 
         } catch (IOException e) {
             e.printStackTrace();

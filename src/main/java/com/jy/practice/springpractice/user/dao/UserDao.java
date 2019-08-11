@@ -4,7 +4,10 @@ import com.jy.practice.springpractice.user.domain.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
 
@@ -120,4 +123,5 @@ public class UserDao {
             }
         }
     }
+
 }

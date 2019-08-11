@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.IOException;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertTrue;
 
 public class CalcSumTest {
     private Calculator calculator;
@@ -25,5 +26,10 @@ public class CalcSumTest {
     @Test
     public void multiplyOfNumbers() throws IOException {
         assertThat(calculator.calcMultiply(numFilepath), is(24));
+    }
+
+    @Test
+    public void concatenateStrings() throws IOException {
+        assertThat(calculator.concatenate(numFilepath), is("1234"));
     }
 }

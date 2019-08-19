@@ -1,12 +1,14 @@
 package com.jy.practice.springpractice.user.test;
 
-import com.jy.practice.springpractice.user.dao.UserDao;
+import com.jy.practice.springpractice.user.dao.UserDaoJdbc;
 import com.jy.practice.springpractice.user.domain.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,7 +23,7 @@ import static org.junit.Assert.assertThat;
 public class UserDaoTest {
 
     @Autowired
-    private UserDao dao;
+    private UserDaoJdbc dao;
 
     private User user1;
     private User user2;
@@ -106,5 +108,13 @@ public class UserDaoTest {
         assertThat(user1.getId(), CoreMatchers.is(user2.getId()));
         assertThat(user1.getName(), CoreMatchers.is(user2.getName()));
         assertThat(user1.getPassword(), CoreMatchers.is(user2.getPassword()));
+    }
+
+    @Test(expected = DuplicateKeyException.class)
+    public void duplicateKey() {
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user1);
     }
 }

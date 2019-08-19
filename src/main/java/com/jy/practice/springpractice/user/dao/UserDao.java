@@ -2,8 +2,7 @@ package com.jy.practice.springpractice.user.dao;
 
 import com.jy.practice.springpractice.user.domain.User;
 import com.jy.practice.springpractice.user.exception.DuplicateUserIdException;
-import com.mysql.cj.exceptions.MysqlErrorNumbers;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -36,11 +35,8 @@ public class UserDao {
         try {
             jdbcTemplate.update("insert into users(id, name, password) values(?,?,?)",
                     user.getId(), user.getName(), user.getPassword());
-        } catch (DataAccessException e) {
-            if(((SQLException)e.getCause()).getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY)
-                throw new DuplicateUserIdException(e);
-            else
-                throw new RuntimeException();
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateUserIdException(e);
         }
     }
 

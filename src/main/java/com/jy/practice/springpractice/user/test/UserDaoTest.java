@@ -1,13 +1,13 @@
 package com.jy.practice.springpractice.user.test;
 
 import com.jy.practice.springpractice.user.dao.UserDaoJdbc;
+import com.jy.practice.springpractice.user.domain.Level;
 import com.jy.practice.springpractice.user.domain.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -37,13 +37,13 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        user1 = new User("gyumee", "박성철", "springno1");
-        user2 = new User("leegw700", "이길원", "springno2");
-        user3 = new User("bumjin", "박범진", "springno3");
+        user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 5, 10);
+        user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 100);
     }
 
     @Test
-    public void addAndGet() throws SQLException {
+    public void addAndGet() {
         dao.deleteAll();
         assertThat(dao.getCount(), CoreMatchers.is(0));
 
@@ -52,16 +52,14 @@ public class UserDaoTest {
         assertThat(dao.getCount(), CoreMatchers.is(2));
 
         User userget1 = dao.get(user1.getId());
-        assertThat(userget1.getName(), CoreMatchers.is(user1.getName()));
-        assertThat(userget1.getPassword(), CoreMatchers.is(user1.getPassword()));
+        checkSameUser(userget1, user1);
 
         User userget2 = dao.get(user2.getId());
-        assertThat(userget2.getName(), CoreMatchers.is(user2.getName()));
-        assertThat(userget2.getPassword(), CoreMatchers.is(user2.getPassword()));
+        checkSameUser(userget2, user2);
     }
 
     @Test
-    public void count() throws SQLException {
+    public void count() {
         dao.deleteAll();
         assertThat(dao.getCount(), CoreMatchers.is(0));
 
@@ -77,7 +75,7 @@ public class UserDaoTest {
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
-    public void getUserFailure() throws SQLException {
+    public void getUserFailure() {
         dao.deleteAll();
         assertThat(dao.getCount(), CoreMatchers.is(0));
 
@@ -85,7 +83,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void getAll() throws SQLException{
+    public void getAll() {
         dao.deleteAll();
 
         List<User> users0 = dao.getAll();
@@ -114,6 +112,9 @@ public class UserDaoTest {
         assertThat(user1.getId(), CoreMatchers.is(user2.getId()));
         assertThat(user1.getName(), CoreMatchers.is(user2.getName()));
         assertThat(user1.getPassword(), CoreMatchers.is(user2.getPassword()));
+        assertThat(user1.getLevel(), CoreMatchers.is(user2.getLevel()));
+        assertThat(user1.getLogin(), CoreMatchers.is(user2.getLogin()));
+        assertThat(user1.getRecommend(), CoreMatchers.is(user2.getRecommend()));
     }
 
     @Test(expected = DuplicateKeyException.class)

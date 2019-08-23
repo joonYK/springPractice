@@ -36,4 +36,15 @@ public class UserService {
             }
         });
     }
+
+    /**
+     * 회원 등록
+     * @param user
+     */
+    public void add(User user) {
+        if(user.getLevel() == null)
+            user.setLevel(Level.BASIC);
+
+        userDao.add(user);
+    }
 }

@@ -44,7 +44,7 @@ public class UserService {
      * 회원 등급 업그레이드
      * @param user
      */
-    private void upgradeLevel(User user) {
+    protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }

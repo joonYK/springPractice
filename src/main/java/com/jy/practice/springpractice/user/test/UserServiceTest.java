@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     private UserLevelUpgradePolicy userLevelUpgradePolicy;
+
+    @Autowired
+    private DataSource dataSource;
 
     private List<User> users;
 
@@ -70,7 +74,11 @@ public class UserServiceTest {
         userDao.deleteAll();
         users.forEach(u -> userDao.add(u));
 
-        userService.upgradeLevels();
+        try {
+            userService.upgradeLevels();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         checkLevelUpgraded(users.get(0), false);
         checkLevelUpgraded(users.get(1), true);
@@ -110,7 +118,8 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() {
         UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
+        testUserService.setDataSource(this.dataSource);
 
         userDao.deleteAll();
         for(User user : users)
@@ -120,7 +129,9 @@ public class UserServiceTest {
             testUserService.upgradeLevels();
             Assert.fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
-
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         checkLevelUpgraded(users.get(1), false);

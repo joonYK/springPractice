@@ -22,6 +22,8 @@ public class UserService {
 
     private DataSource dataSource;
 
+    private PlatformTransactionManager transactionManager;
+
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -34,11 +36,14 @@ public class UserService {
         this.dataSource = dataSource;
     }
 
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
     /**
      * 회원 등급 업데이트
      */
     public void upgradeLevels() {
-        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {

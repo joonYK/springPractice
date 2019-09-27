@@ -20,8 +20,6 @@ public class UserService {
 
     private UserLevelUpgradePolicy userLevelUpgradePolicy;
 
-    private DataSource dataSource;
-
     private PlatformTransactionManager transactionManager;
 
     public void setUserDao(UserDao userDao) {
@@ -30,10 +28,6 @@ public class UserService {
 
     public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
     }
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {

@@ -16,6 +16,7 @@
 
     <bean id="userService" class="com.jy.practice.springpractice.user.service.UserService">
         <property name="userDao" ref="userDao"></property>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"></property>
         <property name="transactionManager" ref="transactionManager"></property>
     </bean>
 

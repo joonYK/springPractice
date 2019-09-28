@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -40,6 +41,9 @@ public class UserServiceTest {
 
     private List<User> users;
 
+    @Autowired
+    private MailSender mailSender;
+
     static class TestUserService extends UserService {
         private String id;
 
@@ -61,11 +65,11 @@ public class UserServiceTest {
     @Before
     public void serUp() {
         users = Arrays.asList(
-                new User("bumjin", "박범진", "p1", Level.BASIC, userLevelUpgradePolicy.getMinLogcountForSilver()-1, 0),
-                new User("joytouch", "강명성", "p2", Level.BASIC, userLevelUpgradePolicy.getMinLogcountForSilver(), 0),
-                new User("erwins", "신승한", "p3", Level.SILVER, 60, userLevelUpgradePolicy.getMinRecommendForGold()-1),
-                new User("madnite1", "이상호", "p4", Level.SILVER, 60, userLevelUpgradePolicy.getMinRecommendForGold()),
-                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE));
+                new User("bumjin", "박범진", "p1", Level.BASIC, userLevelUpgradePolicy.getMinLogcountForSilver()-1, 0, "aaa@aaa.com"),
+                new User("joytouch", "강명성", "p2", Level.BASIC, userLevelUpgradePolicy.getMinLogcountForSilver(), 0, "bbb@aaa.com"),
+                new User("erwins", "신승한", "p3", Level.SILVER, 60, userLevelUpgradePolicy.getMinRecommendForGold()-1, "ccc@aaa.com"),
+                new User("madnite1", "이상호", "p4", Level.SILVER, 60, userLevelUpgradePolicy.getMinRecommendForGold(), "ddd@aaa.com"),
+                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE, "eee@aaa.com"));
     }
 
     @Test

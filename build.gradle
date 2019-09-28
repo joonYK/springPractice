@@ -17,5 +17,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'mysql:mysql-connector-java'
     compile 'org.springframework.boot:spring-boot-starter-test'
-    
+    compile 'javax.mail:mail:1.4.1'
 }

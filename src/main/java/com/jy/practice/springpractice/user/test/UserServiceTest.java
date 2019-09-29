@@ -11,12 +11,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,6 +65,25 @@ public class UserServiceTest {
     static class TestUserServiceException extends RuntimeException {
     }
 
+    // 메일 전송 확인용 목 오브젝트 (메일전송 파라미터에 대한 확인을 할 수 있다.)
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        private List<String> getRequests() {
+            return requests;
+        }
+
+        @Override
+        public void send(SimpleMailMessage simpleMessage) throws MailException {
+            requests.add(simpleMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... simpleMessages) throws MailException {
+
+        }
+    }
+
 
     @Before
     public void serUp() {
@@ -78,9 +101,13 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void upgradeLevels() {
         userDao.deleteAll();
         users.forEach(u -> userDao.add(u));
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
 
         try {
             userService.upgradeLevels();
@@ -93,6 +120,11 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+
+        List<String> requests = mockMailSender.getRequests();
+        Assert.assertThat(requests.size(),CoreMatchers.is(2));
+        Assert.assertThat(requests.get(0),CoreMatchers.is(users.get(1).getEmail()));
+        Assert.assertThat(requests.get(1),CoreMatchers.is(users.get(3).getEmail()));
 
     }
 

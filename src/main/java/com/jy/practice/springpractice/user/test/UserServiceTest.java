@@ -32,6 +32,9 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -107,7 +110,7 @@ public class UserServiceTest {
         users.forEach(u -> userDao.add(u));
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
         try {
             userService.upgradeLevels();
@@ -122,6 +125,7 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(4), false);
 
         List<String> requests = mockMailSender.getRequests();
+
         Assert.assertThat(requests.size(),CoreMatchers.is(2));
         Assert.assertThat(requests.get(0),CoreMatchers.is(users.get(1).getEmail()));
         Assert.assertThat(requests.get(1),CoreMatchers.is(users.get(3).getEmail()));
@@ -167,7 +171,7 @@ public class UserServiceTest {
             userDao.add(user);
 
         try {
-            testUserService.upgradeLevels();
+            userServiceTx.upgradeLevels();
             Assert.fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
             e.printStackTrace();

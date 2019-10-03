@@ -14,10 +14,14 @@
         <property name="password" value="1234"></property>
     </bean>
 
-    <bean id="userService" class="com.jy.practice.springpractice.user.service.UserService">
+    <bean id="userService" class="com.jy.practice.springpractice.user.service.UserServiceTx">
+        <property name="userService" ref="userServiceImpl"></property>
+        <property name="transactionManager" ref="transactionManager"></property>
+    </bean>
+
+    <bean id="userServiceImpl" class="com.jy.practice.springpractice.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"></property>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"></property>
-        <property name="transactionManager" ref="transactionManager"></property>
         <property name="mailSender" ref="mailSender"></property>
     </bean>
 
